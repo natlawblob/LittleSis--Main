@@ -1,5 +1,6 @@
 class Reference < ActiveRecord::Base
   include SingularTable
+  include InternetArchive
   has_paper_trail :on => [:update, :destroy]
 
   has_one :os_match
