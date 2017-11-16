@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171109174122) do
+ActiveRecord::Schema.define(version: 20171116182838) do
 
   create_table "address", force: :cascade do |t|
     t.integer  "entity_id",    limit: 8,                   null: false
@@ -85,16 +85,6 @@ ActiveRecord::Schema.define(version: 20171109174122) do
 
   add_index "api_request", ["api_key"], name: "api_key_idx", using: :btree
   add_index "api_request", ["created_at"], name: "created_at_idx", using: :btree
-
-  create_table "api_tokens", force: :cascade do |t|
-    t.string   "token",      limit: 255, null: false
-    t.integer  "user_id",    limit: 4,   null: false
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
-  end
-
-  add_index "api_tokens", ["token"], name: "index_api_tokens_on_token", unique: true, using: :btree
-  add_index "api_tokens", ["user_id"], name: "index_api_tokens_on_user_id", unique: true, using: :btree
 
   create_table "api_user", force: :cascade do |t|
     t.string   "api_key",       limit: 100,                        null: false
@@ -1246,6 +1236,7 @@ ActiveRecord::Schema.define(version: 20171109174122) do
     t.integer "compensation",    limit: 8
     t.integer "boss_id",         limit: 8
     t.integer "relationship_id", limit: 8, null: false
+    t.boolean "is_government"
   end
 
   add_index "position", ["boss_id"], name: "boss_id_idx", using: :btree
@@ -1294,7 +1285,7 @@ ActiveRecord::Schema.define(version: 20171109174122) do
   add_index "reference", ["name"], name: "name_idx", using: :btree
   add_index "reference", ["object_model", "object_id", "ref_type"], name: "index_reference_on_object_model_and_object_id_and_ref_type", using: :btree
   add_index "reference", ["object_model", "object_id", "updated_at"], name: "object_idx", using: :btree
-  add_index "reference", ["source"], name: "source_idx", length: {"source"=>255}, using: :btree
+  add_index "reference", ["source"], name: "source_idx", length: {"source"=>191}, using: :btree
   add_index "reference", ["updated_at"], name: "updated_at_idx", using: :btree
 
   create_table "reference_excerpt", force: :cascade do |t|

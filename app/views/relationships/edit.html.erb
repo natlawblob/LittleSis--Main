@@ -83,6 +83,9 @@
 		<%= relationship_form_tag( p_form.label(:is_exmployee, 'Employee', class: label_class), radio_buttons_producer(p_form, :is_employee) + content_tag(:small, '(is it a non-leadership staff position?)') )%>
 	    </div>
 	    <div class="row">
+		<%= relationship_form_tag( p_form.label(:is_government, 'Government Employee', class: label_class), radio_buttons_producer(p_form, :is_government) )%>
+	    </div>
+	    <div class="row">
 		<%= relationship_form_tag( p_form.label(:compensation, 'Compensation', class: label_class), p_form.number_field(:compensation) )%>
 	    </div>
 	<% end  %>
