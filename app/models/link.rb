@@ -24,8 +24,7 @@ class Link < ActiveRecord::Base
 
     org_types = related.extension_names
 
-    return 'office' if org_types.include? 'Person'
-    return 'business' if org_types.include? 'Business'
+    return 'business' if (org_types & ['Business', 'BusinessPerson']).any?
     return 'government' if org_types.include? 'GovernmentBody'
     return 'office' if (org_types & ['ElectedRepresentative', 'PublicOfficial']).any?
     return 'other'
