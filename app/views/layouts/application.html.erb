@@ -17,7 +17,7 @@
   <div id="top">
     <nav class="navbar navbar-default navbar-<%= yield(:static_navbar).present? ? 'static' : 'fixed' %>-top">
       <div id="giving-top">
-	<p class="text-center">Today is #GivingTuesday. Please <a href="http://public-accountability.org/donate/">make a tax-deductible donation</a> to support our efforts to develop and maintain LittleSis.org</p>
+	<p class="text-center">Today is #GivingTuesday. Please <a href="/donate">make a tax-deductible donation</a> to support our efforts to develop and maintain LittleSis.org</p>
       </div>
       <% if content_for? :full_width_top %>
 	<div id="top_content_full">
@@ -36,7 +36,7 @@
 	</div>
 
 
-			</div>
+
 		    </div>
 		    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 			<%= render "shared/bootstrap_nav_menu" %>	  
