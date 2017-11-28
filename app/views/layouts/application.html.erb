@@ -12,29 +12,29 @@
 </head>
 
 <body class="<%= yield(:static_navbar).present? ? 'static' : '' %>">
-
-<% unless content_for? :hide_top %>
+  <% unless content_for? :hide_top %>
     
-<div id="top">
-	<nav class="navbar navbar-default navbar-<%= yield(:static_navbar).present? ? 'static' : 'fixed' %>-top">
-	    <div id="giving-top">
-		<p class="text-center">Today is #GivingTuesday. Please <a href="http://public-accountability.org/donate/">make a tax-deductible donation</a> to support our efforts to develop and maintain LittleSis.org</p>
-	    </div>
-	<% if content_for? :full_width_top %>
-		<div id="top_content_full">
-	<% else %>
-		<div id="top_content">
-	<% end %>
-			<div class="navbar-header">
-		    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-		      <span class="sr-only">Toggle navigation</span>
-		      <span class="icon-bar"></span>
-		      <span class="icon-bar"></span>
-		      <span class="icon-bar"></span>
-		    </button>
-		   	<div id="brand">
-					<%= link_to(image_tag("lilsis-logo-trans-200.png"), signed_in? ? home_dashboard_path : root_path) %>
-				</div>
+  <div id="top">
+    <nav class="navbar navbar-default navbar-<%= yield(:static_navbar).present? ? 'static' : 'fixed' %>-top">
+      <div id="giving-top">
+	<p class="text-center">Today is #GivingTuesday. Please <a href="http://public-accountability.org/donate/">make a tax-deductible donation</a> to support our efforts to develop and maintain LittleSis.org</p>
+      </div>
+      <% if content_for? :full_width_top %>
+	<div id="top_content_full">
+      <% else %>
+	  <div id="top_content">
+      <% end %>
+      <div class="navbar-header">
+	<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+	  <span class="sr-only">Toggle navigation</span>
+	  <span class="icon-bar"></span>
+	  <span class="icon-bar"></span>
+	  <span class="icon-bar"></span>
+	</button>
+	<div id="brand">
+	  <%= link_to(image_tag("lilsis-logo-trans-200.png"), signed_in? ? home_dashboard_path : root_path) %>
+	</div>
+
 
 			</div>
 		    </div>
@@ -62,8 +62,13 @@
 		    </div>
 		</div>
 	    </nav>
+
 	</div>
-    <% end %>
+      </div>
+	  </div>
+    </nav>
+  </div>
+<% end %>
 
 <% if content_for? :title %>
 <div id="header">
