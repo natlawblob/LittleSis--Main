@@ -15,6 +15,12 @@ module Exceptions
     end
   end
 
+  class UnauthorizedBulkRequest < StandardError
+    def message
+      "User lacks priveleges to submit bulk request of this size"
+    end
+  end
+
   class InvalidUrlError < ArgumentError
     def message
       "The URL is invalid"
@@ -24,6 +30,12 @@ module Exceptions
   class ModelIsDeletedError < ActiveRecord::ActiveRecordError
     def message
       "The model has been deleted"
+    end
+  end
+
+  class ThatsWeirdError < StandardError
+    def message
+      "Well, that's weird."
     end
   end
 end

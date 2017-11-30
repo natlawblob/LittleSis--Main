@@ -1,8 +1,15 @@
 class EntitiesController < ApplicationController
   include TagableController
   include ReferenceableController
+
+  ERRORS = ActiveSupport::HashWithIndifferentAccess.new(
+    create_bulk: {
+      errors: [{ 'title' => 'Could not create new entities: request formatted improperly' }]
+    }
+  )
+
   before_filter :authenticate_user!, except: [:show, :datatable, :political, :contributions, :references, :interlocks, :giving]
-  before_action :set_entity, except: [:new, :create, :search_by_name, :search_field_names, :show]
+  before_action :set_entity, except: [:new, :create, :search_by_name, :search_field_names, :show, :create_bulk]
   before_action :set_entity_with_eager_loading, only: [:show]
   before_action :importers_only, only: [:match_donation, :match_donations, :review_donations, :match_ny_donations, :review_ny_donations]
   before_action -> { check_permission('contributor') }, only: [:create]
@@ -29,6 +36,16 @@ class EntitiesController < ApplicationController
 
   # THE DATA 'tab'
   def datatable
+  end
+
+  def create_bulk
+    # only responds to JSON, not possible to create extensions in POSTS to this endpoint
+    entity_attrs = create_bulk_payload.map { |x| merge_last_user(x) }
+    block_unless_bulker(entity_attrs, Entity::BULK_LIMIT) # see application_controller
+    entities = Entity.create!(entity_attrs)
+    render json: Api.as_api_json(entities), status: :created
+  rescue ActionController::ParameterMissing, NoMethodError, ActiveRecord::RecordInvalid
+    render json: ERRORS[:create_bulk], status: 400
   end
 
   def new
@@ -168,12 +185,12 @@ class EntitiesController < ApplicationController
     redirect_to fields_entity_path(@entity)
   end
 
-	def search_by_name
-		data = []
-		q = params[:q]
+  def search_by_name
+    data = []
+    q = params[:q]
     num = params.fetch(:num, 10)
     fields = params[:desc] ? 'name,aliases,blurb' : 'name,aliases'
-		entities = Entity.search(
+    entities = Entity.search(
       "@(#{fields}) #{q}", 
       per_page: num, 
       match_mode: :extended, 
@@ -181,7 +198,7 @@ class EntitiesController < ApplicationController
       select: "*, weight() * (link_count + 1) AS link_weight",
       order: "link_weight DESC"
     )
-		data = entities.collect { |e| { value: e.name, name: e.name, id: e.id, blurb: e.blurb, url: datatable_entity_path(e), primary_ext: e.primary_ext } }
+    data = entities.collect { |e| { value: e.name, name: e.name, id: e.id, blurb: e.blurb, url: datatable_entity_path(e), primary_ext: e.primary_ext } }
 
     if list_id = params[:exclude_list]
       entity_ids = ListEntity.where(list_id: list_id).pluck(:entity_id)
@@ -199,8 +216,8 @@ class EntitiesController < ApplicationController
       end      
     end
 
-		render json: data
-	end
+    render json: data
+  end
 
   def search_field_names
     q = params[:q]
@@ -341,35 +358,6 @@ class EntitiesController < ApplicationController
     end
   end
 
-  def find_merges
-    check_permission 'merger'
-    
-    if @entity.person?
-      person = @entity.person
-      @matches = Entity.search("@(name,aliases) #{person.name_last} #{person.name_first}", per_page: 5, match_mode: :extended, with: { is_deleted: false }).select { |e| e.id != @entity.id }
-    elsif @entity.org?
-      @matches = EntityMatcher.by_org_name(@entity.name).select { |e| e.id != @entity.id }
-    end
-
-    if (@q = params[:q]).present?
-      page = params[:page]
-      num = params[:num]
-      @results = Entity.search("@(name,aliases) #{@q}", per_page: num, page: page, match_mode: :extended, with: { is_deleted: false })
-      @results.select! { |e| e.id != @entity.id }
-    end
-  end
-
-  def merge
-    check_permission 'merger'
-
-    @keep = Entity.find(params[:keep_id])
-    EntityMerger.merge_all(@keep, @entity)
-    @entity.soft_delete
-    @keep.clear_cache(request.host)
-
-    redirect_to @keep.legacy_url, notice: 'Entities were successfully merged.'
-  end
-
   def refresh
     check_permission 'admin'
     @entity.clear_cache(request.host)
@@ -462,6 +450,11 @@ class EntitiesController < ApplicationController
 
   def new_entity_params
     params.require(:entity).permit(:name, :blurb, :primary_ext)
+  end
+
+  def create_bulk_payload
+    params.require('data')
+      .map { |r| r.permit('attributes' => %w[name blurb primary_ext])['attributes'] }
   end
 
   def add_relationship_page?

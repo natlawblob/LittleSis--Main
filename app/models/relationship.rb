@@ -30,6 +30,8 @@ class Relationship < ActiveRecord::Base
   HIERARCHY_CATEGORY = 11
   GENERIC_CATEGORY = 12
 
+  BULK_LIMIT = 8
+
   has_many :links, inverse_of: :relationship, dependent: :destroy
   belongs_to :entity, foreign_key: "entity1_id"
   belongs_to :related, class_name: "Entity", foreign_key: "entity2_id"
@@ -529,6 +531,11 @@ class Relationship < ActiveRecord::Base
         add_reference_by_document_id(doc_id)
       end
     end
+  end
+
+  # -> [ entity1_id, entity2_id, category_id ]
+  def triplet
+    [entity1_id, entity2_id, category_id]
   end
 
   private

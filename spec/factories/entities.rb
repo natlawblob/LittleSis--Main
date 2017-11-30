@@ -3,6 +3,12 @@ FactoryBot.define do
     n + 100
   end
 
+  factory :random_entity, class: Entity do
+    sequence(:id)
+    sequence(:name) { Faker::Name.unique.name }
+    primary_ext ['Org', 'Person'].sample
+  end
+
   factory :org, class: Entity do
     name 'org'
     primary_ext 'Org'
@@ -65,5 +71,13 @@ FactoryBot.define do
 
   trait :with_last_user_id do
     last_user_id APP_CONFIG['system_user_id']
+  end
+
+  trait :with_person_name do
+    name { "#{Faker::Name.first_name} #{Faker::Name.last_name}" }
+  end
+
+  trait :with_org_name do
+    name { Faker::Company.name }
   end
 end
