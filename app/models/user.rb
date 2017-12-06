@@ -6,7 +6,6 @@ class User < ActiveRecord::Base
   validates :username, presence: true, uniqueness: { case_sensitive: false }
   validates :default_network_id, presence: true
 
-  # include Cacheable
   # Include default devise modules. Others available are:
   # :token_authenticatable, :encryptable, :confirmable, :lockable, :timeoutable and :omniauthable
   # :legacy_authenticatable, 
@@ -18,6 +17,7 @@ class User < ActiveRecord::Base
 
   belongs_to :sf_guard_user, inverse_of: :user
   has_one :sf_guard_user_profile, foreign_key: "user_id", primary_key: "sf_guard_user_id", inverse_of: :user
+  has_one :image, inverse_of: :user, dependent: :destroy
   accepts_nested_attributes_for :sf_guard_user
 
   before_validation :set_default_network_id
@@ -116,6 +116,12 @@ class User < ActiveRecord::Base
 
   def legacy_check_password(password)
     Digest::SHA1.hexdigest(sf_guard_user.salt + password) == sf_guard_user.password
+  end
+
+  def image_url
+    return "/images/system/anon.png" if image.nil?
+    type = (image.has_square ? "square" : "profile") if type.nil?
+    image.image_path(type)
   end
 
   ###############

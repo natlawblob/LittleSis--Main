@@ -2,8 +2,6 @@ Lilsis::Application.routes.draw do
 
   # match "*path", to: "errors#maintenance", via: :all
 
-  mount Bootsy::Engine => '/bootsy', as: 'bootsy'
-
   devise_for :users, controllers: { confirmations: 'users/confirmations'  }, :skip => [:sessions, :registrations]
   as :user do
     get '/login' => 'users/sessions#new', :as => :new_user_session
@@ -33,26 +31,8 @@ Lilsis::Application.routes.draw do
 
   scope :admin, controller: 'admin', as: 'admin' do
     get '/', action: :home
-    post "/clear_cache", action: :clear_cache
     get '/tags', action: :tags
   end
-
-  resources :hubs, controller: 'campaigns', as: 'campaigns' do
-    member do
-      get 'search_groups'
-      get 'groups'
-      get 'admin'
-      post 'clear_cache'
-      get 'entities'
-      get 'edit_findings'
-      get 'edit_guide'
-      get 'signup'
-      post 'subscribe'
-      get 'thankyou'
-    end
-  end
-
-  get '/hubs/:id(/:campaign_tabs_selected_tab)' => 'campaigns#show'
 
   resources :groups do
     member do
@@ -86,18 +66,23 @@ Lilsis::Application.routes.draw do
 
   get '/groups/:id(/:group_tabs_selected_tab)' => 'groups#show'
 
-  resources :users, only: [:index] do
+  resources :users, only: [:index, :edit] do
     member do
       get 'edit_permissions'
       post 'add_permission'
       post 'restrict'
       delete 'delete_permission'
       delete 'destroy'
+      get 'image'
+      post 'upload_image'
     end
     collection do
       get 'admin'
     end
   end
+
+  get '/users/:username' => 'users#show', as: :user_page
+
 
   resources :lists do
     member do
@@ -305,6 +290,7 @@ Lilsis::Application.routes.draw do
   scope '/nys' do
     get "/" => "nys#index"
     post "/match_donations" => "nys#match_donations"
+    post "/unmatch_donations" => "nys#unmatch_donations"
     get "/candidates" => "nys#candidates"
     get "/pacs" => "nys#pacs"
     get "/:type/new" => "nys#new_filer_entity", constraints: { type: /pacs|candidates/ }
