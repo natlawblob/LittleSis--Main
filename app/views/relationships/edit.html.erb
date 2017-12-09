@@ -12,7 +12,9 @@
     </div>
 
     <% if [1, 2, 3, 5, 7, 10, 11].include? @relationship.category_id %>
-	<%= render partial: 'description_fields_display' %>
+    <div id="entities-display-container">
+		<%= render partial: 'description_fields_display' %>
+	</div>
     <% end  %>
 
     <div class="row">
@@ -34,7 +36,7 @@
     
     <% if requires_description_fields %>
 	<div class="row">
-	    <div class="col-sm-8 bottom-1em">
+	    <div class="col-sm-8 bottom-1em" id="description-fields-container">
 		<%= description_fields(f) %>
 	    </div>
 	</div>

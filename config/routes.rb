@@ -223,7 +223,7 @@ Lilsis::Application.routes.draw do
 
   resources :relationships, except: [:index, :new] do
     member do
-      post 'reverse_direction'
+      get '/reverse_direction' => 'relationships#reverse_direction', as: 'reverse_direction'
       post 'tags'
     end
   end

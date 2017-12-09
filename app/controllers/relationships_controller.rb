@@ -16,6 +16,7 @@ class RelationshipsController < ApplicationController
   # PATCH /relationships/:id
   def update
     @relationship.assign_attributes(prepare_update_params(update_params))
+    reversed = @relationship.entity1_id != Relationship.find(params[:id]).entity1_id
     # If user has not checked the 'just cleaning up' or selected an existing reference
     # then a  new reference must be created
     if @relationship.valid?
@@ -23,6 +24,8 @@ class RelationshipsController < ApplicationController
 
       if @relationship.valid?
         @relationship.save!
+        @relationship.reverse_and_save_links if reversed
+
         update_entity_last_user
         # successful response
         return redirect_to relationship_path(@relationship)
@@ -59,8 +62,10 @@ class RelationshipsController < ApplicationController
 
   # POST /relationships/:id/reverse_direction
   def reverse_direction
+    @relationship.assign_attributes(relationship_params)
     @relationship.reverse_direction
-    redirect_to :action => "edit", :id => @relationship.id
+
+    respond_to :js
   end
 
   def find_similar

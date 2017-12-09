@@ -256,7 +256,7 @@ class Relationship < ActiveRecord::Base
     links.find { |link| linl.entity2_id = entity1_id }
   end
 
-  def reverse_links
+  def reverse_and_save_links
     links.each do |link|
       if link.is_reverse == true
         link.update(is_reverse: false)
@@ -266,12 +266,10 @@ class Relationship < ActiveRecord::Base
     end
   end
 
-  # Switches entity direction and changes reverses links
+  # Switches entity direction without saving
   def reverse_direction
-    update(entity1_id: entity2_id, entity2_id: entity1_id)
-    reverse_links
+    assign_attributes(entity1_id: entity2_id, entity2_id: entity1_id)
   end
-
 
   ###############################
   # Extension Helpers & Getters #

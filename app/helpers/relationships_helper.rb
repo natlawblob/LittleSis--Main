@@ -84,7 +84,9 @@ module RelationshipsHelper
        ' is ',
        f.text_field(:description2),
        ' of ',
-       entity_link(@relationship.entity)].reduce(:+)
+       entity_link(@relationship.entity),
+       f.hidden_field(:entity1_id),
+       f.hidden_field(:entity2_id)].reduce(:+)
     end
   end
 
@@ -97,7 +99,7 @@ module RelationshipsHelper
   end
 
   def reverse_link
-    link_to reverse_direction_relationship_path(@relationship), method: :post do
+    link_to reverse_direction_relationship_path(@relationship, relationship: @relationship.attributes), remote: true, method: :get do
       content_tag(:span, nil, {'class' => 'glyphicon glyphicon-retweet icon-link hvr-pop', 'aria-hidden' =>  true, 'title' => 'switch'}) +
         content_tag(:span, 'switch', style: 'padding-left: 5px')
     end
