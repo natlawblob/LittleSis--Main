@@ -83,10 +83,12 @@ module RelationshipsHelper
        ' is ',
        f.text_field(:description2),
        ' of ',
-       entity_link(@relationship.entity),
-       f.hidden_field(:entity1_id),
-       f.hidden_field(:entity2_id)].reduce(:+)
+       entity_link(@relationship.entity)].reduce(:+)
     end
+  end
+
+  def hidden_fields(f)
+    [f.hidden_field(:entity1_id), f.hidden_field(:entity2_id)].reduce(:+)
   end
 
   def reverse_link_if

@@ -1,1 +1,3 @@
+$('#hidden-fields-container').html('<%= form_for @relationship, method: "patch", class: "form-horizontal"  do |f| %><%= hidden_fields(f) %><% end %>');
+$('#entities-display-container').html('<%= escape_javascript(render partial: "description_fields_display") %>');
 $('#description-fields-container').html('<%= form_for @relationship, method: "patch", class: "form-horizontal"  do |f| %><%= description_fields(f) %><% end %>');

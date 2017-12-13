@@ -1,17 +1,19 @@
 <div id="relationship-edit-description-fields-display">
-  <% first_entity, second_entity = description_fields_titles_and_entites(@relationship) %>
-  
-  <%= render partial: 'description_fields_entity_row', locals: { relationship_entity: first_entity }  %>
+  <% if [1, 2, 3, 5, 7, 10, 11].include? @relationship.category_id %>
+    <% first_entity, second_entity = description_fields_titles_and_entites(@relationship) %>
+    
+    <%= render partial: 'description_fields_entity_row', locals: { relationship_entity: first_entity }  %>
 
-  <% if @relationship.is_reversible?  %>
-    <div class="row">
-      <div class="col-sm-2 col-sm-offset-2" style="padding-bottom: 7px">
-	<div style="padding-left: 8px">
-	  <%= reverse_link %>
-	</div>
+    <% if @relationship.is_reversible?  %>
+      <div class="row">
+        <div class="col-sm-2 col-sm-offset-2" style="padding-bottom: 7px">
+  	<div style="padding-left: 8px">
+  	  <%= reverse_link %>
+  	</div>
+        </div>
       </div>
-    </div>
-  <% end  %>
+    <% end  %>
 
-  <%= render partial: 'description_fields_entity_row', locals: { relationship_entity: second_entity }  %>
+    <%= render partial: 'description_fields_entity_row', locals: { relationship_entity: second_entity }  %>
+  <% end %>
 </div>
