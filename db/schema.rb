@@ -1289,7 +1289,7 @@ ActiveRecord::Schema.define(version: 20171204223305) do
   add_index "reference", ["name"], name: "name_idx", using: :btree
   add_index "reference", ["object_model", "object_id", "ref_type"], name: "index_reference_on_object_model_and_object_id_and_ref_type", using: :btree
   add_index "reference", ["object_model", "object_id", "updated_at"], name: "object_idx", using: :btree
-  add_index "reference", ["source"], name: "source_idx", length: {"source"=>255}, using: :btree
+  add_index "reference", ["source"], name: "source_idx", length: {"source"=>191}, using: :btree
   add_index "reference", ["updated_at"], name: "updated_at_idx", using: :btree
 
   create_table "reference_excerpt", force: :cascade do |t|
