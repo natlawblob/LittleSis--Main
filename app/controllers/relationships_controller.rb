@@ -39,6 +39,7 @@ class RelationshipsController < ApplicationController
 
     if @relationship.valid?
       @relationship.save!
+      @relationship.position.update(is_board: "get params is_board") if @relationship.is_position?
       if existing_document_id
         @relationship.add_reference_by_document_id(existing_document_id)
       else
@@ -223,7 +224,8 @@ class RelationshipsController < ApplicationController
   end
 
   def relationship_params
-    prepare_update_params(params.require(:relationship).permit(:entity1_id, :entity2_id, :category_id, :is_current, :description1, :description2))
+    prepare_update_params(params.require(:relationship)
+      .permit(:entity1_id, :entity2_id, :category_id, :is_current, :description1, :description2, :amount, :start_date, :end_date, :position => [:is_board]))
   end
 
   # whitelists relationship params and associated nested attributes
