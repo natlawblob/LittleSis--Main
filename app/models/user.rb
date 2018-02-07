@@ -2,6 +2,13 @@ class User < ApplicationRecord
   include ChatUser
   include UserEdits
 
+  # This establishes a per-thread accessor that
+  # returns the current_user (which could be nil)
+  # The setup is derived from here: github.com/rails/rails/pull/22630
+  # The application controller sets (and reset afterwards) User.current_user
+  # This means that we can access the current user in our models
+  thread_mattr_accessor :current_user
+
   validates :sf_guard_user_id, presence: true, uniqueness: true
   validates :email, presence: true, uniqueness: { case_sensitive: false }
   validates :username, presence: true, uniqueness: { case_sensitive: false }
@@ -186,6 +193,10 @@ class User < ApplicationRecord
     else
       raise ArgumentError, "Invalid class. Provided: #{input.class}"
     end
+  end
+
+  def self.reset_current_user
+    self.current_user = nil
   end
 
   private

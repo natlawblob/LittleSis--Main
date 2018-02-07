@@ -7,9 +7,12 @@ class ApplicationController < ActionController::Base
 
   before_action :admins_only if Lilsis::Application.config.admins_only
 
+  before_action :configure_permitted_parameters, if: :devise_controller?
+
   before_action :set_paper_trail_whodunnit
 
-  before_action :configure_permitted_parameters, if: :devise_controller?
+  # before_action { User.current_user = current_user }
+  # after_action { User.reset_current_user }
 
   rescue_from Exceptions::PermissionError do |exception|
     render "errors/permission", status: 403
